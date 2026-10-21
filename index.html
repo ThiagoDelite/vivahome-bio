@@ -150,14 +150,13 @@
 <!-- ============ CONFIGURE AQUI (links e contatos) ============ -->
 <script>
   const CONFIG = {
-    lojaOnline: "https://SEU-SITE-DE-ECOMMERCE.com.br",          // link do e-commerce
     instagram: "vivahomemoveis",
     consultoras: [
       { nome: "Patrícia", whatsapp: "5534998672939" },
       { nome: "Gabriela", whatsapp: "5534999302939" }
     ],
     mensagemWhats: "Olá! Vim pelo Instagram da Vivá Home e gostaria de atendimento.",
-    mapa: "https://www.google.com/maps/search/?api=1&query=Viv%C3%A1+Home+Uberl%C3%A2ndia"  // troque pelo link exato do Google Maps
+    mapa: "https://maps.app.goo.gl/w7m4VoVxkJBa5Rhd7"
   };
 </script>
 
@@ -176,8 +175,7 @@
     <h1 class="title">Sua casa<br />mais viva</h1>
     <p>Móveis e objetos de desenho autoral, escolhidos um a um para quem enxerga a casa como expressão pessoal.</p>
     <div class="btns">
-      <a class="btn btn-light js-loja" href="#">Ver loja online <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
-      <a class="btn btn-ghost-light" href="#contato">Falar com uma consultora</a>
+      <a class="btn btn-light" href="#contato">Falar com uma consultora</a>
     </div>
   </div>
 </div>
@@ -187,7 +185,7 @@
   <div class="wrap">
     <p class="caps eyebrow">Vitrine</p>
     <h2 class="title">Conheça nossas peças</h2>
-    <p class="muted">Escolha uma categoria para ter uma noção do que você encontra no showroom. Para ver fotos, valores e detalhes, abra a peça na loja online ou fale com uma consultora.</p>
+    <p class="muted">Escolha uma categoria para ter uma noção do que você encontra no showroom. Para ver fotos, valores e detalhes, fale com uma consultora.</p>
   </div>
   <div class="tabs" id="tabs" role="tablist"></div>
   <div class="wrap"><div class="grid" id="grid"></div></div>
@@ -243,10 +241,7 @@
   <div class="wrap">
     <p class="caps eyebrow">Atendimento</p>
     <h2 class="title">Como você quer seguir?</h2>
-    <p class="muted">Compre direto pela loja online ou fale com uma consultora para um atendimento personalizado.</p>
-    <div class="btns">
-      <a class="btn btn-solid js-loja" href="#" target="_blank" rel="noreferrer">Ver loja online <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
-    </div>
+    <p class="muted">Fale com uma consultora para um atendimento personalizado.</p>
     <div class="btns" id="consultoras"></div>
     <div class="btns"><a class="btn btn-outline js-insta" href="#" target="_blank" rel="noreferrer">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6" fill="currentColor"/></svg>
@@ -259,7 +254,6 @@
 <script>
   const wa = (n) => `https://wa.me/${n}?text=${encodeURIComponent(CONFIG.mensagemWhats)}`;
   const icoWa = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.5 20.5 5 16a8.5 8.5 0 1 1 3 3l-4.5 1.5Z"/></svg>';
-  document.querySelectorAll(".js-loja").forEach(a => { a.href = CONFIG.lojaOnline; a.target = "_blank"; a.rel = "noreferrer"; });
   document.querySelectorAll(".js-mapa").forEach(a => a.href = CONFIG.mapa);
   document.querySelectorAll(".js-insta").forEach(a => a.href = `https://www.instagram.com/${CONFIG.instagram}/`);
   document.querySelectorAll(".js-insta-txt").forEach(s => s.textContent = "@" + CONFIG.instagram);
@@ -268,12 +262,11 @@
 
   const CATEGORIAS = [{"slug": "sofas", "nome": "Sofás", "pecas": [{"nome": "Sofá Contorno", "slug": "sofa-contorno"}, {"nome": "Sofá Modular Off-White", "slug": "sofa-modular-off-white"}, {"nome": "Sofá em Couro Caramelo", "slug": "sofa-couro-caramelo"}]}, {"slug": "poltronas-e-cadeiras", "nome": "Poltronas e Cadeiras", "pecas": [{"nome": "Poltrona Korv", "slug": "poltrona-korv"}, {"nome": "Poltrona Bouclé Caramelo", "slug": "poltrona-boucle-caramelo"}, {"nome": "Cadeira de Jantar Off-White", "slug": "cadeira-jantar-off-white"}, {"nome": "Poltrona com Braços em Madeira", "slug": "poltrona-bracos-madeira"}, {"nome": "Poltrona Verde", "slug": "poltrona-verde-bracos-madeira"}, {"nome": "Espreguiçadeira em Madeira", "slug": "espreguicadeira-madeira"}, {"nome": "Poltrona Cinza", "slug": "poltrona-cinza-base-metalica"}, {"nome": "Poltrona Grafite", "slug": "poltrona-grafite"}]}, {"slug": "mesas-e-aparadores", "nome": "Mesas e Aparadores", "pecas": [{"nome": "Mesa de Jantar Origem", "slug": "mesa-de-jantar-origem"}, {"nome": "Mesa de Centro Seixo", "slug": "mesa-de-centro-seixo"}, {"nome": "Aparador Raiz", "slug": "aparador-raiz"}]}, {"slug": "quarto", "nome": "Quarto", "pecas": [{"nome": "Cama Lis", "slug": "cama-lis"}, {"nome": "Cama Horizonte", "slug": "cama-horizonte"}, {"nome": "Cama Noir", "slug": "cama-noir"}]}, {"slug": "iluminacao", "nome": "Iluminação", "pecas": [{"nome": "Luminária de Piso Arco", "slug": "luminaria-de-piso-arco"}, {"nome": "Pendente Cúpula", "slug": "pendente-cupula"}]}, {"slug": "decoracao", "nome": "Decoração", "pecas": [{"nome": "Nicho Carvalho", "slug": "nicho-carvalho"}, {"nome": "Prateleiras Freijó", "slug": "prateleiras-freijo"}, {"nome": "Composição Galeria", "slug": "composicao-galeria"}]}];
   const tabs = document.getElementById("tabs"), grid = document.getElementById("grid");
-  const linkPeca = (slug) => `${CONFIG.lojaOnline.replace(/\/$/, "")}/peca?p=${encodeURIComponent(slug)}`;
   function mostrar(slug) {
     const c = CATEGORIAS.find(x => x.slug === slug);
     tabs.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t.dataset.slug === slug));
-    grid.innerHTML = c.pecas.map((p, i) => `<a class="peca" href="${linkPeca(p.slug)}" target="_blank" rel="noreferrer">
-      <div><span>${String(i + 1).padStart(2, "0")} · ${c.nome}</span><h3>${p.nome}</h3></div><em>Ver peça →</em></a>`).join("");
+    grid.innerHTML = c.pecas.map((p, i) => `<a class="peca" href="#contato">
+      <div><span>${String(i + 1).padStart(2, "0")} · ${c.nome}</span><h3>${p.nome}</h3></div><em>Consultar peça →</em></a>`).join("");
   }
   tabs.innerHTML = CATEGORIAS.map(c => `<button class="tab" role="tab" data-slug="${c.slug}">${c.nome}<small>${c.pecas.length}</small></button>`).join("");
   tabs.addEventListener("click", e => { const t = e.target.closest(".tab"); if (t) mostrar(t.dataset.slug); });
