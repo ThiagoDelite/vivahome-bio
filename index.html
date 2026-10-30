@@ -378,10 +378,20 @@
       bt.classList.toggle("tocando", tocando); bt.setAttribute("aria-pressed", tocando);
       bt.querySelector(".rotulo").textContent = tocando ? "Pausar trilha" : "Ouvir trilha";
     }
+    let pausadoPeloVisitante = false;
+    function tocar() { au.volume = 0; au.play().then(() => { estado(true); rampa(VOLUME, 1200); }).catch(() => estado(false)); }
     bt.addEventListener("click", () => {
-      if (au.paused) { au.volume = 0; au.play().then(() => { estado(true); rampa(VOLUME, 1200); }).catch(() => estado(false)); }
-      else { estado(false); rampa(0, 600, () => au.pause()); }
+      if (au.paused) { pausadoPeloVisitante = false; tocar(); }
+      else { pausadoPeloVisitante = true; estado(false); rampa(0, 600, () => au.pause()); }
     });
+    // Primeiro toque ou clique em qualquer lugar da página liga a música (navegadores exigem essa interação)
+    const EVENTOS = ["pointerdown", "touchend", "keydown"];
+    function primeiroToque(e) {
+      EVENTOS.forEach(ev => document.removeEventListener(ev, primeiroToque, true));
+      if (bt.contains(e.target) || pausadoPeloVisitante || !au.paused) return;  // o botão cuida de si mesmo
+      tocar();
+    }
+    EVENTOS.forEach(ev => document.addEventListener(ev, primeiroToque, true));
     document.addEventListener("visibilitychange", () => { if (document.hidden && !au.paused) { au.pause(); estado(false); } });
   })();
   document.getElementById("ano").textContent = new Date().getFullYear();
