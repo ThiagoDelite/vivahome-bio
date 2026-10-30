@@ -124,6 +124,20 @@
   .vitrine.estatica .destaque { position: static; }
   .vitrine.estatica .indicador { display: none; }
 
+  /* Trilha sonora (só toca quando o visitante pede) */
+  .trilha { position: fixed; left: 16px; bottom: 16px; z-index: 50; display: inline-flex; align-items: center; gap: 10px;
+    height: 44px; padding: 0 16px 0 12px; border: 1px solid rgba(255,255,255,.25); background: rgba(10,10,10,.72);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: #fff; cursor: pointer;
+    font: 500 10px/1 Inter, sans-serif; letter-spacing: .24em; text-transform: uppercase; transition: background .25s; }
+  .trilha:hover { background: rgba(10,10,10,.9); }
+  .trilha .barras { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
+  .trilha .barras i { width: 2px; height: 4px; background: currentColor; transition: height .2s; }
+  .trilha.tocando .barras i { animation: eq 1s ease-in-out infinite; }
+  .trilha.tocando .barras i:nth-child(2) { animation-delay: .2s; }
+  .trilha.tocando .barras i:nth-child(3) { animation-delay: .4s; }
+  @keyframes eq { 0%,100% { height: 4px; } 50% { height: 14px; } }
+  @media (prefers-reduced-motion: reduce) { .trilha.tocando .barras i { animation: none; height: 10px; } }
+
   /* História */
   .dark { background: var(--ink); color: #fff; }
   .dark .muted { color: var(--on-dark-muted); }
@@ -267,6 +281,11 @@
   </div>
 </section>
 
+<button class="trilha" id="trilha" type="button" aria-pressed="false" aria-label="Ouvir trilha sonora">
+  <span class="barras" aria-hidden="true"><i></i><i></i><i></i></span><span class="rotulo">Ouvir trilha</span>
+</button>
+<audio id="audio-trilha" src="musica.mp3" preload="none" loop></audio>
+
 <footer>© <span id="ano"></span> Vivá Home Móveis e Decorações</footer>
 
 <script>
@@ -344,6 +363,26 @@
     if (imgs.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let i = 0;
     setInterval(() => { imgs[i].classList.remove("on"); i = (i + 1) % imgs.length; imgs[i].classList.add("on"); }, 4000);
+  })();
+  // Trilha sonora: só começa quando o visitante toca no botão, com entrada e saída suaves
+  (function () {
+    const bt = document.getElementById("trilha"), au = document.getElementById("audio-trilha");
+    if (!bt || !au) return;
+    const VOLUME = 0.6; let anim = null;
+    function rampa(alvo, ms, fim) {
+      cancelAnimationFrame(anim); const ini = au.volume, t0 = performance.now();
+      const passo = (t) => { const k = Math.min(1, (t - t0) / ms); au.volume = ini + (alvo - ini) * k; if (k < 1) anim = requestAnimationFrame(passo); else if (fim) fim(); };
+      anim = requestAnimationFrame(passo);
+    }
+    function estado(tocando) {
+      bt.classList.toggle("tocando", tocando); bt.setAttribute("aria-pressed", tocando);
+      bt.querySelector(".rotulo").textContent = tocando ? "Pausar trilha" : "Ouvir trilha";
+    }
+    bt.addEventListener("click", () => {
+      if (au.paused) { au.volume = 0; au.play().then(() => { estado(true); rampa(VOLUME, 1200); }).catch(() => estado(false)); }
+      else { estado(false); rampa(0, 600, () => au.pause()); }
+    });
+    document.addEventListener("visibilitychange", () => { if (document.hidden && !au.paused) { au.pause(); estado(false); } });
   })();
   document.getElementById("ano").textContent = new Date().getFullYear();
 </script>
