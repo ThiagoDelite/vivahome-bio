@@ -322,6 +322,8 @@
     const palco = document.getElementById("destaques");
     const ind = document.getElementById("indicador");
     const n = PECAS_DO_MES.length;
+    // Ordem aleatória a cada visita
+    for (let i = n - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [PECAS_DO_MES[i], PECAS_DO_MES[j]] = [PECAS_DO_MES[j], PECAS_DO_MES[i]]; }
     palco.innerHTML = PECAS_DO_MES.map((p, i) => `<a class="destaque" href="#contato">
       <div><span>${String(i + 1).padStart(2, "0")} / ${String(n).padStart(2, "0")} · ${p.categoria}</span><h3>${p.nome}</h3>
       ${p.design ? `<p class="autor">Design ${p.design}</p>` : ""}${p.texto ? `<p class="desc">${p.texto}</p>` : ""}</div>
