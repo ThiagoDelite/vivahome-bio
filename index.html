@@ -76,7 +76,8 @@
   .btn-light { background: #fff; color: var(--ink); border-color: #fff; }
   .btn-light:hover { background: transparent; color: #fff; }
   .btn-ghost-light { color: #fff; }
-  .btn-ghost-light:hover { background: #fff; color: var(--ink); }
+  .btn-ghost-light:hover:not(:disabled) { background: #fff; color: var(--ink); }
+  .btn:disabled { cursor: default; opacity: .65; }
   .btn-solid { background: var(--ink); color: #fff; border-color: var(--ink); }
   .btn-solid:hover { background: transparent; color: var(--ink); }
   .btn-outline { color: var(--ink); }
@@ -219,6 +220,7 @@
     <p>Móveis e objetos de desenho autoral, escolhidos um a um para quem enxerga a casa como expressão pessoal.</p>
     <div class="btns">
       <a class="btn btn-light" href="#contato">Falar com uma consultora</a>
+      <button class="btn btn-ghost-light" type="button" disabled>Comprar online</button>
     </div>
   </div>
 </div>
