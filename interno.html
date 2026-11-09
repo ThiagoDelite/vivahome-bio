@@ -49,6 +49,25 @@
   .wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
   .logo svg { height: 30px; width: auto; display: block; }
 
+
+  /* Navegação da área interna */
+  .nav-interna { border-bottom: 1px solid var(--line); background: var(--bg); }
+  .nav-interna .wrap { display: flex; gap: 28px; overflow-x: auto; scrollbar-width: none; }
+  .nav-interna .wrap::-webkit-scrollbar { display: none; }
+  .nav-interna button { flex: none; border: 0; border-bottom: 2px solid transparent; background: none; color: var(--muted); padding: 17px 0 15px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; }
+  .nav-interna button[aria-current="page"] { color: var(--ink); border-color: var(--ink); }
+  .area-intro { padding: 38px 0 12px; }
+  .area-intro h1 { font-size: clamp(25px, 4vw, 36px); font-weight: 400; letter-spacing: -.035em; margin: 6px 0 8px; }
+  .area-intro p { color: var(--muted); margin: 0; max-width: 540px; }
+  .area-cards { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin: 20px 0 26px; }
+  .area-cards > div { background: var(--bg); padding: 20px; }
+  .area-cards strong { display: block; margin-top: 8px; font-size: 28px; font-weight: 300; }
+  .area-info { border: 1px solid var(--line); background: var(--surface); padding: 24px; margin: 22px 0; }
+  .area-info h2 { font-size: 15px; font-weight: 500; margin: 0 0 7px; }
+  .area-info p { margin: 0; color: var(--muted); font-size: 13px; }
+  .area-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  @media(max-width:600px) { .nav-interna .wrap { gap: 20px; } .nav-interna button { font-size: 10px; letter-spacing: .08em; } .area-cards > div { padding: 14px 10px; } .area-cards strong { font-size: 24px; } }
+
   /* Login */
   .login { min-height: calc(100svh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); display: grid; place-items: center; padding-block: 32px; }
   .login form { width: 100%; max-width: 380px; display: grid; gap: 16px; }
@@ -154,10 +173,29 @@
 <!-- APP -->
 <div id="tela-app" hidden>
   <header class="topo"><div class="wrap topo-in">
-    <div class="marca"><span class="logo"><svg viewBox="108 162 500 519" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M402.7,660.8C401.7,660.0 400.5,657.0 399.9,653.5C399.3,650.2 397.9,645.0 396.8,642.0C395.8,639.0 394.0,631.4 392.9,625.1C391.8,618.8 389.7,609.5 388.1,604.5C386.5,599.6 384.6,591.7 384.0,587.0C383.3,582.3 381.9,576.3 380.8,573.6C379.8,570.9 377.8,563.4 376.4,557.1C375.1,550.7 373.3,543.8 372.5,541.7C371.7,539.6 369.7,532.6 368.0,526.0C366.4,519.4 364.4,512.8 363.7,511.3C362.9,509.8 361.7,505.8 361.0,502.5C360.3,499.2 358.5,493.0 356.9,488.8C355.2,484.6 353.0,477.9 351.9,474.0C350.8,470.0 349.1,465.1 348.0,463.0C347.0,461.0 345.6,457.1 344.9,454.4C343.8,450.0 341.0,442.5 334.1,426.0C332.8,423.0 330.2,416.7 328.3,412.1C326.4,407.5 324.2,402.8 323.5,401.6C322.7,400.4 321.2,396.9 320.1,393.8C319.1,390.8 317.0,386.5 315.6,384.4C314.2,382.2 312.4,378.6 311.6,376.2C310.7,373.8 309.2,370.7 308.1,369.2C307.1,367.7 304.8,363.8 303.1,360.5C301.4,357.2 298.4,352.0 296.5,349.0C294.6,346.0 291.2,340.6 289.0,337.0C283.1,327.3 278.2,320.2 271.5,311.5C268.2,307.2 264.8,302.7 263.9,301.4C259.0,294.1 244.2,277.5 231.7,265.4C217.8,251.8 191.0,230.6 181.2,225.2C178.6,223.9 174.2,221.3 171.5,219.5C161.1,212.8 139.2,201.5 134.5,200.4C128.1,199.0 126.1,194.1 130.2,190.3C133.6,187.2 152.3,182.9 165.5,182.3C178.9,181.6 196.5,183.4 204.0,186.2C207.0,187.3 213.1,189.4 217.5,191.0C227.2,194.3 239.1,201.3 256.5,213.8C268.5,222.5 299.4,251.6 305.2,259.7C306.5,261.5 311.1,267.3 315.5,272.6C324.2,283.2 328.7,289.4 340.5,306.7C344.7,312.9 348.6,318.2 349.1,318.6C349.6,318.9 351.4,321.7 353.1,324.8C354.8,327.9 358.2,334.1 360.7,338.5C363.2,342.9 366.8,349.4 368.7,353.0C370.7,356.6 373.8,362.4 375.8,366.0C377.7,369.6 381.0,375.6 383.0,379.5C385.0,383.4 387.4,387.9 388.3,389.5C393.2,398.8 405.4,424.9 407.1,429.7C408.1,432.8 409.8,436.2 410.7,437.2C412.9,439.7 415.9,439.5 416.9,436.7C417.5,435.1 419.4,225.2 419.0,203.8C419.0,199.9 423.4,198.6 437.8,198.4C450.7,198.3 451.5,198.4 453.6,200.5L455.9,202.8L455.5,229.7C455.3,244.4 455.1,308.0 454.9,370.9L454.7,485.4L457.0,487.2C459.1,488.9 462.2,489.0 503.1,489.0C545.7,489.0 547.1,488.9 549.0,487.0C550.1,485.9 551.0,484.0 551.0,482.8C551.0,481.5 551.0,418.1 551.0,341.9C551.0,203.7 551.0,203.3 553.0,200.7L555.1,198.1L569.5,198.3C583.1,198.5 584.0,198.7 586.4,200.9L588.9,203.3L588.3,263.9C587.7,336.7 587.6,348.9 586.5,513.0C586.1,583.7 585.3,642.5 584.9,643.8C583.9,646.4 580.8,647.9 568.9,651.4C558.4,654.5 555.9,654.6 553.4,651.9C551.6,649.9 551.5,647.2 551.3,590.6C551.2,558.1 550.8,530.5 550.5,529.3C550.2,528.1 549.0,526.6 547.9,526.0C546.5,525.2 531.9,524.7 503.8,524.5C459.2,524.1 457.4,524.2 455.5,528.7C455.1,529.7 454.9,555.1 454.9,585.2C455.0,615.3 454.8,641.5 454.4,643.5C453.4,649.1 449.4,652.6 442.5,654.0C439.2,654.6 431.1,656.5 424.5,658.2C409.7,662.0 405.0,662.5 402.7,660.8Z"/></svg></span><span><b>VIVÁ HOME</b><small>Área interna · Estoque</small></span></div>
+    <div class="marca"><span class="logo"><svg viewBox="108 162 500 519" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M402.7,660.8C401.7,660.0 400.5,657.0 399.9,653.5C399.3,650.2 397.9,645.0 396.8,642.0C395.8,639.0 394.0,631.4 392.9,625.1C391.8,618.8 389.7,609.5 388.1,604.5C386.5,599.6 384.6,591.7 384.0,587.0C383.3,582.3 381.9,576.3 380.8,573.6C379.8,570.9 377.8,563.4 376.4,557.1C375.1,550.7 373.3,543.8 372.5,541.7C371.7,539.6 369.7,532.6 368.0,526.0C366.4,519.4 364.4,512.8 363.7,511.3C362.9,509.8 361.7,505.8 361.0,502.5C360.3,499.2 358.5,493.0 356.9,488.8C355.2,484.6 353.0,477.9 351.9,474.0C350.8,470.0 349.1,465.1 348.0,463.0C347.0,461.0 345.6,457.1 344.9,454.4C343.8,450.0 341.0,442.5 334.1,426.0C332.8,423.0 330.2,416.7 328.3,412.1C326.4,407.5 324.2,402.8 323.5,401.6C322.7,400.4 321.2,396.9 320.1,393.8C319.1,390.8 317.0,386.5 315.6,384.4C314.2,382.2 312.4,378.6 311.6,376.2C310.7,373.8 309.2,370.7 308.1,369.2C307.1,367.7 304.8,363.8 303.1,360.5C301.4,357.2 298.4,352.0 296.5,349.0C294.6,346.0 291.2,340.6 289.0,337.0C283.1,327.3 278.2,320.2 271.5,311.5C268.2,307.2 264.8,302.7 263.9,301.4C259.0,294.1 244.2,277.5 231.7,265.4C217.8,251.8 191.0,230.6 181.2,225.2C178.6,223.9 174.2,221.3 171.5,219.5C161.1,212.8 139.2,201.5 134.5,200.4C128.1,199.0 126.1,194.1 130.2,190.3C133.6,187.2 152.3,182.9 165.5,182.3C178.9,181.6 196.5,183.4 204.0,186.2C207.0,187.3 213.1,189.4 217.5,191.0C227.2,194.3 239.1,201.3 256.5,213.8C268.5,222.5 299.4,251.6 305.2,259.7C306.5,261.5 311.1,267.3 315.5,272.6C324.2,283.2 328.7,289.4 340.5,306.7C344.7,312.9 348.6,318.2 349.1,318.6C349.6,318.9 351.4,321.7 353.1,324.8C354.8,327.9 358.2,334.1 360.7,338.5C363.2,342.9 366.8,349.4 368.7,353.0C370.7,356.6 373.8,362.4 375.8,366.0C377.7,369.6 381.0,375.6 383.0,379.5C385.0,383.4 387.4,387.9 388.3,389.5C393.2,398.8 405.4,424.9 407.1,429.7C408.1,432.8 409.8,436.2 410.7,437.2C412.9,439.7 415.9,439.5 416.9,436.7C417.5,435.1 419.4,225.2 419.0,203.8C419.0,199.9 423.4,198.6 437.8,198.4C450.7,198.3 451.5,198.4 453.6,200.5L455.9,202.8L455.5,229.7C455.3,244.4 455.1,308.0 454.9,370.9L454.7,485.4L457.0,487.2C459.1,488.9 462.2,489.0 503.1,489.0C545.7,489.0 547.1,488.9 549.0,487.0C550.1,485.9 551.0,484.0 551.0,482.8C551.0,481.5 551.0,418.1 551.0,341.9C551.0,203.7 551.0,203.3 553.0,200.7L555.1,198.1L569.5,198.3C583.1,198.5 584.0,198.7 586.4,200.9L588.9,203.3L588.3,263.9C587.7,336.7 587.6,348.9 586.5,513.0C586.1,583.7 585.3,642.5 584.9,643.8C583.9,646.4 580.8,647.9 568.9,651.4C558.4,654.5 555.9,654.6 553.4,651.9C551.6,649.9 551.5,647.2 551.3,590.6C551.2,558.1 550.8,530.5 550.5,529.3C550.2,528.1 549.0,526.6 547.9,526.0C546.5,525.2 531.9,524.7 503.8,524.5C459.2,524.1 457.4,524.2 455.5,528.7C455.1,529.7 454.9,555.1 454.9,585.2C455.0,615.3 454.8,641.5 454.4,643.5C453.4,649.1 449.4,652.6 442.5,654.0C439.2,654.6 431.1,656.5 424.5,658.2C409.7,662.0 405.0,662.5 402.7,660.8Z"/></svg></span><span><b>VIVÁ HOME</b><small>Área interna</small></span></div>
     <button class="sair caps" id="btn-sair" type="button">Sair</button>
   </div></header>
+  <nav class="nav-interna" aria-label="Navegação da área interna"><div class="wrap" id="nav-interna">
+    <button type="button" data-area="visao" aria-current="page">Visão geral</button>
+    <button type="button" data-area="financeiro">Financeiro</button>
+    <button type="button" data-area="vendas">Vendas</button>
+    <button type="button" data-area="estoque">Estoque</button>
+  </div></nav>
   <main class="wrap" style="padding-block: 0 48px">
+    <section id="area-visao" aria-labelledby="titulo-visao">
+      <div class="area-intro"><span class="caps muted">Vivá Home · Área interna</span><h1 id="titulo-visao">Visão geral</h1><p>Acompanhe o estoque e acesse as demais áreas.</p></div>
+      <div class="area-cards" aria-label="Resumo do estoque">
+        <div><span class="caps muted">Itens</span><strong id="v-itens">—</strong></div>
+        <div><span class="caps muted">Unidades</span><strong id="v-unid">—</strong></div>
+        <div><span class="caps muted">Decor</span><strong id="v-decor">—</strong></div>
+      </div>
+      <div class="area-actions"><button type="button" class="btn cheio" data-ir="estoque">Abrir estoque</button></div>
+      <div class="area-info"><h2>Financeiro e vendas</h2><p>Essas áreas estão em preparação. Os dados de estoque são atualizados conforme os cadastros.</p></div>
+    </section>
+    <section id="area-financeiro" hidden aria-labelledby="titulo-financeiro"><div class="area-intro"><span class="caps muted">Área interna</span><h1 id="titulo-financeiro">Financeiro</h1><p>Espaço para acompanhar informações financeiras da Vivá Home.</p></div><div class="area-info"><h2>Área em preparação</h2><p>Os dados financeiros ainda não foram configurados.</p></div></section>
+    <section id="area-vendas" hidden aria-labelledby="titulo-vendas"><div class="area-intro"><span class="caps muted">Área interna</span><h1 id="titulo-vendas">Vendas</h1><p>Espaço para acompanhar as vendas da Vivá Home.</p></div><div class="area-info"><h2>Área em preparação</h2><p>O acompanhamento de vendas ainda não foi configurado.</p></div></section>
+    <section id="area-estoque" hidden aria-labelledby="titulo-estoque"><div class="area-intro"><span class="caps muted">Área interna</span><h1 id="titulo-estoque">Estoque</h1><p>Consulte e catalogue as peças do showroom.</p></div>
     <div class="pilha">
       <button type="button" class="btn cheio largo grande" id="btn-novo">+ Catalogar peça</button>
     </div>
@@ -172,6 +210,7 @@
     <div class="lista" id="lista"></div>
     <div class="vazio" id="vazio"><strong>Carregando estoque</strong><span class="girando"></span></div>
     <div class="pilha"><button type="button" class="btn largo" id="btn-exportar" hidden>Exportar planilha</button></div>
+    </section>
   </main>
 </div>
 
@@ -197,6 +236,17 @@
   const sb = configurado && window.supabase ? window.supabase.createClient(C.supabaseUrl, C.supabaseAnonKey, { auth: { persistSession: true, autoRefreshToken: true } }) : null;
 
   let itens = [], filtro = "Todos", termo = "", carregou = false, urls = {};
+  const areas = ["visao", "financeiro", "vendas", "estoque"];
+  function mostrarArea(area) {
+    if (!areas.includes(area)) return;
+    areas.forEach(a => { $("area-" + a).hidden = a !== area; });
+    $("nav-interna").querySelectorAll("button[data-area]").forEach(b => {
+      if (b.dataset.area === area) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
+    });
+  }
+  $("nav-interna").addEventListener("click", e => { const b = e.target.closest("button[data-area]"); if (b) mostrarArea(b.dataset.area); });
+  document.querySelectorAll("[data-ir]").forEach(b => b.addEventListener("click", () => mostrarArea(b.dataset.ir)));
+
 
   // ---------- Login ----------
   const emailDe = (u) => { u = u.trim(); if (u.includes("@")) return u.toLowerCase();
@@ -261,6 +311,7 @@
   function render() {
     const soma = (arr) => arr.reduce((s, i) => s + (Number(i.quantidade) || 0), 0);
     $("r-itens").textContent = itens.length; $("r-unid").textContent = soma(itens); $("r-decor").textContent = soma(itens.filter(i => i.grupo === "Decor"));
+    $("v-itens").textContent = carregou ? itens.length : "—"; $("v-unid").textContent = carregou ? soma(itens) : "—"; $("v-decor").textContent = carregou ? soma(itens.filter(i => i.grupo === "Decor")) : "—";
     const cont = { Todos: itens.length }; GRUPOS.forEach(g => cont[g] = itens.filter(i => i.grupo === g).length);
     $("chips").innerHTML = ["Todos", ...GRUPOS].map(g => `<button type="button" class="chip" data-g="${g}" aria-pressed="${g === filtro}">${g}<small>${cont[g]}</small></button>`).join("");
     const t = norm(termo);
