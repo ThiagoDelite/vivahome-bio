@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Vivá Interno</title>
+<meta name="theme-color" content="#0a0a0a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Vivá Interno">
+<link rel="apple-touch-icon" href="/icone-180.png">
+<link rel="icon" type="image/png" href="/icone-180.png">
+<link rel="manifest" href="/interno.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+  // ============ CONFIGURAÇÃO (Supabase > Project Settings > API) ============
+  // A chave "anon" é pública por natureza; a proteção vem do login e das regras do banco.
+  window.VIVA_CONFIG = {
+    supabaseUrl: "https://fbafioyjrnzifsgxvukm.supabase.co",
+    supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZiYWZpb3lqcm56aWZzZ3h2dWttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQxODI3NjksImV4cCI6MjEwOTc1ODc2OX0.T8ATW-rWoKh9U_d0_sTY0BViZHOJ_FKMqBqCw4ImAsE",
+    dominioUsuarios: "vivahome.com.br"   // "Rafael Galindo" vira rafael.galindo@vivahome.com.br
+  };
+</script>
+<style>
+  :root {
+    --bg: #ffffff; --surface: #f4f4f2; --line: #e4e4e2; --ink: #0a0a0a; --muted: #6b6b6b; --on-ink: #ffffff;
+    --ok: #3f6f4c; --danger: #a0463e;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0d0d0d; --surface: #171716; --line: #2b2b29; --ink: #f2f2f0; --muted: #9a9a96; --on-ink: #0d0d0d; --ok: #7fb08c; --danger: #d98a80; color-scheme: dark; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased;
+    padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  [hidden] { display: none !important; }
+  img { max-width: 100%; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .caps { font-size: 10px; font-weight: 500; letter-spacing: .26em; text-transform: uppercase; }
+  .muted { color: var(--muted); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .logo svg { height: 30px; width: auto; display: block; }
+
+  /* Login */
+  .login { min-height: calc(100svh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); display: grid; place-items: center; padding-block: 32px; }
+  .login form { width: 100%; max-width: 380px; display: grid; gap: 16px; }
+  .login .logo svg { height: 54px; margin: 0 auto 6px; }
+  .login h1 { margin: 0; text-align: center; font-size: 13px; font-weight: 500; letter-spacing: .32em; }
+  .login p.sub { margin: 0 0 8px; text-align: center; }
+
+  /* Topo */
+  header.topo { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--bg); border-bottom: 1px solid var(--line); }
+  .topo-in { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 12px; }
+  .marca { display: flex; align-items: center; gap: 10px; }
+  .marca b { display: block; font-size: 12px; font-weight: 500; letter-spacing: .3em; }
+  .marca small { display: block; font-size: 9px; letter-spacing: .26em; text-transform: uppercase; color: var(--muted); }
+  .sair { background: none; border: 1px solid var(--line); min-height: 40px; padding: 0 12px; cursor: pointer; }
+
+  .resumo { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 16px; }
+  .resumo div { background: var(--bg); padding: 12px 12px 10px; }
+  .resumo strong { display: block; font-size: 24px; font-weight: 300; font-variant-numeric: tabular-nums; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 18px; border: 1px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer;
+    font-size: 11px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; -webkit-tap-highlight-color: transparent; }
+  .btn.cheio { background: var(--ink); color: var(--on-ink); }
+  .btn.largo { width: 100%; }
+  .btn.grande { min-height: 72px; font-size: 13px; }
+  .btn.perigo { border-color: var(--danger); color: var(--danger); }
+  .btn:disabled { opacity: .45; }
+  .busca { width: 100%; min-height: 48px; border: 1px solid var(--line); background: var(--bg); padding: 0 14px; border-radius: 0; -webkit-appearance: none; }
+  .pilha { display: grid; gap: 10px; margin-top: 16px; }
+  .chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin-top: 12px; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip { flex: none; height: 36px; padding: 0 14px; border: 1px solid var(--line); background: var(--bg); color: var(--muted); cursor: pointer; font-size: 10px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; }
+  .chip[aria-pressed="true"] { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
+  .chip small { margin-left: 6px; opacity: .7; }
+  .aviso { margin-top: 12px; padding: 12px 14px; border: 1px solid var(--line); background: var(--surface); font-size: 13px; }
+  .aviso.erro { border-color: var(--danger); color: var(--danger); }
+
+  .lista { margin-top: 8px; }
+  .card { display: grid; grid-template-columns: 68px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 0; border: 0; border-bottom: 1px solid var(--line); background: none; width: 100%; text-align: left; cursor: pointer; }
+  .thumb { width: 68px; height: 68px; object-fit: cover; background: var(--surface); border: 1px solid var(--line); display: grid; place-items: center; font-size: 8px; letter-spacing: .1em; color: var(--muted); }
+  .card h3 { margin: 0; font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; overflow-wrap: anywhere; }
+  .card p { margin: 2px 0 0; font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+  .qtd { text-align: center; font-size: 20px; font-weight: 300; font-variant-numeric: tabular-nums; min-width: 40px; }
+  .qtd small { display: block; font-size: 9px; font-weight: 500; letter-spacing: .2em; color: var(--muted); }
+  .vazio { text-align: center; padding: 36px 8px; color: var(--muted); }
+  .vazio strong { display: block; color: var(--ink); font-weight: 500; letter-spacing: .2em; text-transform: uppercase; font-size: 12px; margin-bottom: 6px; }
+
+  /* Painel */
+  .painel { position: fixed; inset: 0; z-index: 40; background: var(--bg); overflow-y: auto; -webkit-overflow-scrolling: touch; padding-top: env(safe-area-inset-top, 0px); padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
+  .painel-topo { position: sticky; top: 0; z-index: 2; background: var(--bg); border-bottom: 1px solid var(--line); }
+  .painel-topo .wrap { display: flex; align-items: center; justify-content: space-between; padding-block: 12px; }
+  .fechar { min-width: 44px; min-height: 44px; border: 1px solid var(--line); background: var(--bg); cursor: pointer; font-size: 18px; }
+  .corpo { max-width: 640px; margin: 0 auto; padding-block: 20px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 16px; }
+  .pergunta { font-size: 22px; font-weight: 300; letter-spacing: .06em; text-transform: uppercase; margin: 0; }
+  .fotos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .fotos figure { margin: 0; display: grid; gap: 6px; }
+  .prev { aspect-ratio: 1; width: 100%; background: var(--surface); border: 1px dashed var(--line); display: grid; place-items: center; overflow: hidden; color: var(--muted); font-size: 12px; text-align: center; padding: 8px; }
+  .prev img { width: 100%; height: 100%; object-fit: contain; }
+  .prev .btn { min-height: 40px; padding: 0 10px; font-size: 10px; }
+  .arquivo { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+  .campos { display: grid; gap: 14px; }
+  .campo { display: grid; gap: 6px; min-width: 0; }
+  .campo label, .campo .rot { font-size: 10px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+  .campo input, .campo textarea { width: 100%; min-height: 48px; border: 1px solid var(--line); background: var(--bg); padding: 10px 12px; border-radius: 0; -webkit-appearance: none; font-size: 16px; }
+  .campo textarea { min-height: 84px; resize: vertical; }
+  .dupla { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+  .grupo-sel { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .grupo-sel button { min-height: 48px; border: 1px solid var(--line); background: var(--bg); cursor: pointer; font-size: 11px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; }
+  .grupo-sel button[aria-pressed="true"] { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
+  .stepper { display: grid; grid-template-columns: 60px minmax(0, 1fr) 60px; border: 1px solid var(--ink); height: 58px; }
+  .stepper button { border: 0; background: var(--bg); font-size: 24px; cursor: pointer; }
+  .stepper input { border: 0; border-left: 1px solid var(--line); border-right: 1px solid var(--line); text-align: center; font-size: 24px; font-weight: 300; min-height: 0; padding: 0; -webkit-appearance: none; }
+  .rapidos { display: flex; gap: 8px; flex-wrap: wrap; }
+  .rapidos button { min-width: 48px; min-height: 42px; border: 1px solid var(--line); background: var(--bg); cursor: pointer; }
+  .status { font-size: 13px; padding: 10px 12px; background: var(--surface); border-left: 2px solid var(--ink); }
+  .status.erro { border-color: var(--danger); color: var(--danger); }
+  .status.ok { border-color: var(--ok); }
+  details.lido { border: 1px solid var(--line); padding: 10px 12px; font-size: 13px; }
+  details.lido summary { cursor: pointer; font-size: 10px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+  details.lido pre { white-space: pre-wrap; overflow-wrap: anywhere; margin: 8px 0 0; font-family: inherit; }
+  .duas { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .confirmar { border: 1px solid var(--danger); padding: 12px; display: grid; gap: 10px; }
+  .girando { display: inline-block; width: 14px; height: 14px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: gira .8s linear infinite; vertical-align: -2px; }
+  @keyframes gira { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .girando { animation: none; } }
+  @media (min-width: 760px) { .lista { display: grid; grid-template-columns: 1fr 1fr; column-gap: 32px; } }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<section class="login wrap" id="tela-login" hidden>
+  <form id="form-login" autocomplete="on">
+    <div class="logo"><svg viewBox="108 162 500 519" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M402.7,660.8C401.7,660.0 400.5,657.0 399.9,653.5C399.3,650.2 397.9,645.0 396.8,642.0C395.8,639.0 394.0,631.4 392.9,625.1C391.8,618.8 389.7,609.5 388.1,604.5C386.5,599.6 384.6,591.7 384.0,587.0C383.3,582.3 381.9,576.3 380.8,573.6C379.8,570.9 377.8,563.4 376.4,557.1C375.1,550.7 373.3,543.8 372.5,541.7C371.7,539.6 369.7,532.6 368.0,526.0C366.4,519.4 364.4,512.8 363.7,511.3C362.9,509.8 361.7,505.8 361.0,502.5C360.3,499.2 358.5,493.0 356.9,488.8C355.2,484.6 353.0,477.9 351.9,474.0C350.8,470.0 349.1,465.1 348.0,463.0C347.0,461.0 345.6,457.1 344.9,454.4C343.8,450.0 341.0,442.5 334.1,426.0C332.8,423.0 330.2,416.7 328.3,412.1C326.4,407.5 324.2,402.8 323.5,401.6C322.7,400.4 321.2,396.9 320.1,393.8C319.1,390.8 317.0,386.5 315.6,384.4C314.2,382.2 312.4,378.6 311.6,376.2C310.7,373.8 309.2,370.7 308.1,369.2C307.1,367.7 304.8,363.8 303.1,360.5C301.4,357.2 298.4,352.0 296.5,349.0C294.6,346.0 291.2,340.6 289.0,337.0C283.1,327.3 278.2,320.2 271.5,311.5C268.2,307.2 264.8,302.7 263.9,301.4C259.0,294.1 244.2,277.5 231.7,265.4C217.8,251.8 191.0,230.6 181.2,225.2C178.6,223.9 174.2,221.3 171.5,219.5C161.1,212.8 139.2,201.5 134.5,200.4C128.1,199.0 126.1,194.1 130.2,190.3C133.6,187.2 152.3,182.9 165.5,182.3C178.9,181.6 196.5,183.4 204.0,186.2C207.0,187.3 213.1,189.4 217.5,191.0C227.2,194.3 239.1,201.3 256.5,213.8C268.5,222.5 299.4,251.6 305.2,259.7C306.5,261.5 311.1,267.3 315.5,272.6C324.2,283.2 328.7,289.4 340.5,306.7C344.7,312.9 348.6,318.2 349.1,318.6C349.6,318.9 351.4,321.7 353.1,324.8C354.8,327.9 358.2,334.1 360.7,338.5C363.2,342.9 366.8,349.4 368.7,353.0C370.7,356.6 373.8,362.4 375.8,366.0C377.7,369.6 381.0,375.6 383.0,379.5C385.0,383.4 387.4,387.9 388.3,389.5C393.2,398.8 405.4,424.9 407.1,429.7C408.1,432.8 409.8,436.2 410.7,437.2C412.9,439.7 415.9,439.5 416.9,436.7C417.5,435.1 419.4,225.2 419.0,203.8C419.0,199.9 423.4,198.6 437.8,198.4C450.7,198.3 451.5,198.4 453.6,200.5L455.9,202.8L455.5,229.7C455.3,244.4 455.1,308.0 454.9,370.9L454.7,485.4L457.0,487.2C459.1,488.9 462.2,489.0 503.1,489.0C545.7,489.0 547.1,488.9 549.0,487.0C550.1,485.9 551.0,484.0 551.0,482.8C551.0,481.5 551.0,418.1 551.0,341.9C551.0,203.7 551.0,203.3 553.0,200.7L555.1,198.1L569.5,198.3C583.1,198.5 584.0,198.7 586.4,200.9L588.9,203.3L588.3,263.9C587.7,336.7 587.6,348.9 586.5,513.0C586.1,583.7 585.3,642.5 584.9,643.8C583.9,646.4 580.8,647.9 568.9,651.4C558.4,654.5 555.9,654.6 553.4,651.9C551.6,649.9 551.5,647.2 551.3,590.6C551.2,558.1 550.8,530.5 550.5,529.3C550.2,528.1 549.0,526.6 547.9,526.0C546.5,525.2 531.9,524.7 503.8,524.5C459.2,524.1 457.4,524.2 455.5,528.7C455.1,529.7 454.9,555.1 454.9,585.2C455.0,615.3 454.8,641.5 454.4,643.5C453.4,649.1 449.4,652.6 442.5,654.0C439.2,654.6 431.1,656.5 424.5,658.2C409.7,662.0 405.0,662.5 402.7,660.8Z"/></svg></div>
+    <h1>VIVÁ HOME</h1>
+    <p class="sub caps muted">Área interna</p>
+    <div class="campo"><label for="l-usuario">E-mail</label><input id="l-usuario" name="username" type="email" autocomplete="username" autocapitalize="none" required></div>
+    <div class="campo"><label for="l-senha">Senha</label><input id="l-senha" name="password" type="password" autocomplete="current-password" required></div>
+    <div class="status erro" id="l-erro" hidden></div>
+    <button class="btn cheio largo grande" type="submit" id="l-entrar">Entrar</button>
+  </form>
+</section>
+
+<!-- APP -->
+<div id="tela-app" hidden>
+  <header class="topo"><div class="wrap topo-in">
+    <div class="marca"><span class="logo"><svg viewBox="108 162 500 519" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M402.7,660.8C401.7,660.0 400.5,657.0 399.9,653.5C399.3,650.2 397.9,645.0 396.8,642.0C395.8,639.0 394.0,631.4 392.9,625.1C391.8,618.8 389.7,609.5 388.1,604.5C386.5,599.6 384.6,591.7 384.0,587.0C383.3,582.3 381.9,576.3 380.8,573.6C379.8,570.9 377.8,563.4 376.4,557.1C375.1,550.7 373.3,543.8 372.5,541.7C371.7,539.6 369.7,532.6 368.0,526.0C366.4,519.4 364.4,512.8 363.7,511.3C362.9,509.8 361.7,505.8 361.0,502.5C360.3,499.2 358.5,493.0 356.9,488.8C355.2,484.6 353.0,477.9 351.9,474.0C350.8,470.0 349.1,465.1 348.0,463.0C347.0,461.0 345.6,457.1 344.9,454.4C343.8,450.0 341.0,442.5 334.1,426.0C332.8,423.0 330.2,416.7 328.3,412.1C326.4,407.5 324.2,402.8 323.5,401.6C322.7,400.4 321.2,396.9 320.1,393.8C319.1,390.8 317.0,386.5 315.6,384.4C314.2,382.2 312.4,378.6 311.6,376.2C310.7,373.8 309.2,370.7 308.1,369.2C307.1,367.7 304.8,363.8 303.1,360.5C301.4,357.2 298.4,352.0 296.5,349.0C294.6,346.0 291.2,340.6 289.0,337.0C283.1,327.3 278.2,320.2 271.5,311.5C268.2,307.2 264.8,302.7 263.9,301.4C259.0,294.1 244.2,277.5 231.7,265.4C217.8,251.8 191.0,230.6 181.2,225.2C178.6,223.9 174.2,221.3 171.5,219.5C161.1,212.8 139.2,201.5 134.5,200.4C128.1,199.0 126.1,194.1 130.2,190.3C133.6,187.2 152.3,182.9 165.5,182.3C178.9,181.6 196.5,183.4 204.0,186.2C207.0,187.3 213.1,189.4 217.5,191.0C227.2,194.3 239.1,201.3 256.5,213.8C268.5,222.5 299.4,251.6 305.2,259.7C306.5,261.5 311.1,267.3 315.5,272.6C324.2,283.2 328.7,289.4 340.5,306.7C344.7,312.9 348.6,318.2 349.1,318.6C349.6,318.9 351.4,321.7 353.1,324.8C354.8,327.9 358.2,334.1 360.7,338.5C363.2,342.9 366.8,349.4 368.7,353.0C370.7,356.6 373.8,362.4 375.8,366.0C377.7,369.6 381.0,375.6 383.0,379.5C385.0,383.4 387.4,387.9 388.3,389.5C393.2,398.8 405.4,424.9 407.1,429.7C408.1,432.8 409.8,436.2 410.7,437.2C412.9,439.7 415.9,439.5 416.9,436.7C417.5,435.1 419.4,225.2 419.0,203.8C419.0,199.9 423.4,198.6 437.8,198.4C450.7,198.3 451.5,198.4 453.6,200.5L455.9,202.8L455.5,229.7C455.3,244.4 455.1,308.0 454.9,370.9L454.7,485.4L457.0,487.2C459.1,488.9 462.2,489.0 503.1,489.0C545.7,489.0 547.1,488.9 549.0,487.0C550.1,485.9 551.0,484.0 551.0,482.8C551.0,481.5 551.0,418.1 551.0,341.9C551.0,203.7 551.0,203.3 553.0,200.7L555.1,198.1L569.5,198.3C583.1,198.5 584.0,198.7 586.4,200.9L588.9,203.3L588.3,263.9C587.7,336.7 587.6,348.9 586.5,513.0C586.1,583.7 585.3,642.5 584.9,643.8C583.9,646.4 580.8,647.9 568.9,651.4C558.4,654.5 555.9,654.6 553.4,651.9C551.6,649.9 551.5,647.2 551.3,590.6C551.2,558.1 550.8,530.5 550.5,529.3C550.2,528.1 549.0,526.6 547.9,526.0C546.5,525.2 531.9,524.7 503.8,524.5C459.2,524.1 457.4,524.2 455.5,528.7C455.1,529.7 454.9,555.1 454.9,585.2C455.0,615.3 454.8,641.5 454.4,643.5C453.4,649.1 449.4,652.6 442.5,654.0C439.2,654.6 431.1,656.5 424.5,658.2C409.7,662.0 405.0,662.5 402.7,660.8Z"/></svg></span><span><b>VIVÁ HOME</b><small>Área interna · Estoque</small></span></div>
+    <button class="sair caps" id="btn-sair" type="button">Sair</button>
+  </div></header>
+  <main class="wrap" style="padding-block: 0 48px">
+    <div class="pilha">
+      <button type="button" class="btn cheio largo grande" id="btn-novo">+ Catalogar peça</button>
+    </div>
+    <div class="resumo" aria-label="Resumo">
+      <div><span class="caps muted">Itens</span><strong id="r-itens">0</strong></div>
+      <div><span class="caps muted">Unidades</span><strong id="r-unid">0</strong></div>
+      <div><span class="caps muted">Decor</span><strong id="r-decor">0</strong></div>
+    </div>
+    <div class="pilha"><input class="busca" id="busca" type="search" placeholder="Buscar por nome, código ou tipo" aria-label="Buscar"></div>
+    <div class="chips" id="chips"></div>
+    <div id="avisos"></div>
+    <div class="lista" id="lista"></div>
+    <div class="vazio" id="vazio"><strong>Carregando estoque</strong><span class="girando"></span></div>
+    <div class="pilha"><button type="button" class="btn largo" id="btn-exportar" hidden>Exportar planilha</button></div>
+  </main>
+</div>
+
+<div class="painel" id="painel" hidden role="dialog" aria-modal="true" aria-labelledby="painel-titulo">
+  <div class="painel-topo"><div class="wrap"><span class="caps" id="painel-titulo"></span><button type="button" class="fechar" id="painel-fechar" aria-label="Fechar">×</button></div></div>
+  <div class="corpo" id="corpo"></div>
+</div>
+
+<input class="arquivo" type="file" accept="image/*" capture="environment" id="arq-camera" aria-label="Tirar foto">
+<input class="arquivo" type="file" accept="image/*" id="arq-galeria" aria-label="Enviar foto da galeria">
+
+<script>
+(() => {
+  const C = window.VIVA_CONFIG;
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const TIPOS = {
+    Decor: ["Vaso", "Escultura", "Bandeja", "Bowl", "Castiçal", "Livro", "Quadro", "Espelho", "Almofada", "Manta", "Tapete", "Cesto", "Luminária", "Objeto decorativo"],
+    "Mobiliário": ["Sofá", "Poltrona", "Cadeira", "Banqueta", "Mesa de jantar", "Mesa de centro", "Mesa lateral", "Aparador", "Banco", "Estante", "Cama", "Pufe"]
+  };
+  const GRUPOS = ["Decor", "Mobiliário"];
+  const configurado = C && /^https:\/\//.test(C.supabaseUrl) && C.supabaseAnonKey && !/COLE_AQUI/.test(C.supabaseAnonKey);
+  const sb = configurado && window.supabase ? window.supabase.createClient(C.supabaseUrl, C.supabaseAnonKey, { auth: { persistSession: true, autoRefreshToken: true } }) : null;
+
+  let itens = [], filtro = "Todos", termo = "", carregou = false, urls = {};
+
+  // ---------- Login ----------
+  const emailDe = (u) => { u = u.trim(); if (u.includes("@")) return u.toLowerCase();
+    return u.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, ".").replace(/^\.|\.$/g, "") + "@" + C.dominioUsuarios; };
+  $("form-login").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const erro = $("l-erro"), bt = $("l-entrar"); erro.hidden = true;
+    if (!sb) { erro.textContent = "A área interna ainda não foi configurada."; erro.hidden = false; return; }
+    bt.disabled = true; bt.innerHTML = `<span class="girando"></span> Entrando`;
+    const { error } = await sb.auth.signInWithPassword({ email: emailDe($("l-usuario").value), password: $("l-senha").value });
+    bt.disabled = false; bt.textContent = "Entrar";
+    if (error) { erro.textContent = /invalid/i.test(error.message) ? "Usuário ou senha incorretos." : "Não foi possível entrar. Verifique a internet."; erro.hidden = false; return; }
+    $("l-senha").value = ""; mostrarApp();
+  });
+  $("btn-sair").addEventListener("click", async () => { if (sb) await sb.auth.signOut(); itens = []; mostrarLogin(); });
+  function mostrarLogin() { $("tela-app").hidden = true; $("tela-login").hidden = false; fecharPainel(); }
+  function mostrarApp() { $("tela-login").hidden = true; $("tela-app").hidden = false; carregar(); }
+
+  // ---------- Dados ----------
+  async function carregar() {
+    const { data, error } = await sb.from("estoque").select("*").order("criado_em", { ascending: false });
+    carregou = true;
+    if (error) { aviso("Não foi possível carregar o estoque. Puxe a tela para atualizar ou entre de novo.", true); render(); return; }
+    itens = data || []; await assinarFotos(); render();
+  }
+  async function assinarFotos() {
+    const caminhos = [...new Set(itens.flatMap(i => [i.foto_produto, i.foto_etiqueta]).filter(p => p && !urls[p]))];
+    if (!caminhos.length) return;
+    const { data } = await sb.storage.from("fotos").createSignedUrls(caminhos, 60 * 60 * 6);
+    (data || []).forEach(d => { if (d.signedUrl) urls[d.path] = d.signedUrl; });
+  }
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && sb && !$("tela-app").hidden && $("painel").hidden) carregar(); });
+
+  // ---------- Fotos ----------
+  function reduzir(file, max = 1600, q = 0.82) {
+    return new Promise((res, rej) => {
+      const url = URL.createObjectURL(file), img = new Image();
+      img.onload = () => { const k = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+        const c = document.createElement("canvas"); c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+        c.toBlob(b => b ? res(b) : rej(new Error("conversão")), "image/jpeg", q); };
+      img.onerror = () => { URL.revokeObjectURL(url); rej(new Error("Não foi possível abrir a foto.")); };
+      img.src = url;
+    });
+  }
+  const pedirFoto = (origem) => new Promise(res => {
+    const input = $(origem === "galeria" ? "arq-galeria" : "arq-camera");
+    const h = () => { input.removeEventListener("change", h); const f = input.files && input.files[0]; input.value = ""; res(f || null); };
+    input.addEventListener("change", h); input.click();
+  });
+  async function subir(blob, nome) {
+    if (!blob) return "";
+    const caminho = `${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}-${nome}.jpg`;
+    const { error } = await sb.storage.from("fotos").upload(caminho, blob, { contentType: "image/jpeg", upsert: false });
+    if (error) throw error;
+    return caminho;
+  }
+  const blobParaBase64 = (blob) => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(",")[1]); r.onerror = rej; r.readAsDataURL(blob); });
+
+  // ---------- Lista ----------
+  const norm = (s) => String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  function render() {
+    const soma = (arr) => arr.reduce((s, i) => s + (Number(i.quantidade) || 0), 0);
+    $("r-itens").textContent = itens.length; $("r-unid").textContent = soma(itens); $("r-decor").textContent = soma(itens.filter(i => i.grupo === "Decor"));
+    const cont = { Todos: itens.length }; GRUPOS.forEach(g => cont[g] = itens.filter(i => i.grupo === g).length);
+    $("chips").innerHTML = ["Todos", ...GRUPOS].map(g => `<button type="button" class="chip" data-g="${g}" aria-pressed="${g === filtro}">${g}<small>${cont[g]}</small></button>`).join("");
+    const t = norm(termo);
+    const lista = itens.filter(i => filtro === "Todos" || i.grupo === filtro).filter(i => !t || norm([i.nome, i.codigo, i.tipo, i.marca, i.obs].join(" ")).includes(t));
+    $("lista").innerHTML = lista.map(i => { const f = urls[i.foto_produto] || urls[i.foto_etiqueta];
+      return `<button type="button" class="card" data-id="${i.id}">${f ? `<img class="thumb" src="${esc(f)}" alt="" loading="lazy">` : `<span class="thumb">SEM FOTO</span>`}
+      <span style="min-width:0"><h3>${esc(i.nome || "Sem nome")}</h3><p>${esc([i.tipo, i.codigo].filter(Boolean).join(" · ") || i.grupo)}</p>${i.obs ? `<p>${esc(i.obs)}</p>` : ""}</span>
+      <span class="qtd">${Number(i.quantidade) || 0}<small>UN.</small></span></button>`; }).join("");
+    const v = $("vazio");
+    v.hidden = carregou && lista.length > 0;
+    v.innerHTML = !carregou ? `<strong>Carregando estoque</strong><span class="girando"></span>`
+      : !itens.length ? `<strong>Nenhuma peça catalogada ainda</strong>Toque em "Catalogar peça" e fotografe a etiqueta.`
+      : `<strong>Nada encontrado</strong>Ajuste a busca ou o filtro.`;
+    $("btn-exportar").hidden = !itens.length;
+  }
+  function aviso(txt, erro) { $("avisos").innerHTML = txt ? `<div class="aviso ${erro ? "erro" : ""}">${txt}</div>` : ""; if (txt && !erro) setTimeout(() => { if ($("avisos").textContent.includes(txt.replace(/<[^>]+>/g, "").slice(0, 10))) $("avisos").innerHTML = ""; }, 5000); }
+  $("chips").addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) { filtro = b.dataset.g; render(); } });
+  $("busca").addEventListener("input", e => { termo = e.target.value; render(); });
+  $("lista").addEventListener("click", e => { const b = e.target.closest(".card"); if (b) abrirDetalhe(b.dataset.id); });
+
+  // ---------- Painel ----------
+  const painel = $("painel"), corpo = $("corpo");
+  function abrirPainel(t) { $("painel-titulo").textContent = t; painel.hidden = false; painel.scrollTop = 0; document.body.style.overflow = "hidden"; }
+  function fecharPainel() { painel.hidden = true; corpo.innerHTML = ""; document.body.style.overflow = ""; }
+  $("painel-fechar").addEventListener("click", fecharPainel);
+  function status(txt, tipo) { const s = $("f-status"); if (!s) return; s.hidden = !txt; s.className = "status" + (tipo ? " " + tipo : ""); s.innerHTML = txt || ""; }
+
+  let novo = null;
+  $("btn-novo").addEventListener("click", iniciar);
+  function iniciar() {
+    novo = { nome: "", codigo: "", marca: "", medidas: "", preco: "", grupo: "Decor", tipo: "", quantidade: 1, obs: "", lido: "", blobEtiqueta: null, blobProduto: null };
+    abrirPainel("Catalogar peça");
+    corpo.innerHTML = `
+      <p class="pergunta">A peça tem etiqueta?</p>
+      <p class="muted" style="margin:0">Com etiqueta, a foto já preenche nome, código e o que estiver escrito nela.</p>
+      <button type="button" class="btn cheio largo grande" id="c-tirar">Tirar foto da etiqueta</button>
+      <button type="button" class="btn largo" id="c-enviar">Enviar foto da etiqueta</button>
+      <button type="button" class="btn largo" id="c-sem" style="margin-top:8px">Não tem etiqueta</button>`;
+    const comEtiqueta = async (origem) => { const f = await pedirFoto(origem); if (!f) return;
+      try { novo.blobEtiqueta = await reduzir(f); } catch (e) { return; }
+      formulario(true); lerEtiqueta(); };
+    $("c-tirar").onclick = () => comEtiqueta("camera");
+    $("c-enviar").onclick = () => comEtiqueta("galeria");
+    $("c-sem").onclick = () => {
+      corpo.innerHTML = `<p class="pergunta">Foto da peça</p>
+        <p class="muted" style="margin:0">Sem etiqueta, a foto da peça é o registro principal. Depois escreva o nome, se souber.</p>
+        <button type="button" class="btn cheio largo grande" id="p-tirar">Tirar foto da peça</button>
+        <button type="button" class="btn largo" id="p-enviar">Enviar foto da peça</button>
+        <button type="button" class="btn largo" id="p-pular" style="margin-top:8px">Continuar sem foto</button>`;
+      const comProduto = async (origem) => { const f = await pedirFoto(origem); if (!f) return;
+        try { novo.blobProduto = await reduzir(f); } catch (e) { return; } formulario(false); };
+      $("p-tirar").onclick = () => comProduto("camera"); $("p-enviar").onclick = () => comProduto("galeria"); $("p-pular").onclick = () => formulario(false);
+    };
+  }
+
+  function camposHTML(v, ehNovo) {
+    return `<div class="campos">
+      <div class="campo"><label for="f-nome">Nome da peça</label><input id="f-nome" value="${esc(v.nome)}" placeholder="Ex.: Vaso de cerâmica grafite" autocomplete="off"></div>
+      <div class="campo"><span class="rot">Grupo</span><div class="grupo-sel" id="f-grupo">${GRUPOS.map(g => `<button type="button" data-g="${g}" aria-pressed="${v.grupo === g}">${g}</button>`).join("")}</div></div>
+      <div class="campo"><label for="f-tipo">O que é</label><input id="f-tipo" list="lista-tipos" value="${esc(v.tipo)}" placeholder="Ex.: Vaso, Sofá, Poltrona" autocomplete="off"><datalist id="lista-tipos">${(TIPOS[v.grupo] || []).map(t => `<option value="${t}">`).join("")}</datalist></div>
+      <div class="campo"><span class="rot">Quantas unidades?</span>
+        <div class="stepper"><button type="button" id="q-menos" aria-label="Menos uma">−</button><input id="f-qtd" type="number" inputmode="numeric" min="0" value="${Number(v.quantidade) || 0}" aria-label="Quantidade"><button type="button" id="q-mais" aria-label="Mais uma">+</button></div>
+        ${ehNovo ? `<div class="rapidos">${[1, 2, 3, 4, 5, 10].map(n => `<button type="button" data-q="${n}">${n}</button>`).join("")}</div>` : ""}</div>
+      <div class="dupla"><div class="campo"><label for="f-codigo">Código</label><input id="f-codigo" value="${esc(v.codigo)}" autocomplete="off"></div>
+        <div class="campo"><label for="f-marca">Marca ou fornecedor</label><input id="f-marca" value="${esc(v.marca)}" autocomplete="off"></div></div>
+      <div class="dupla"><div class="campo"><label for="f-medidas">Medidas</label><input id="f-medidas" value="${esc(v.medidas)}" autocomplete="off"></div>
+        <div class="campo"><label for="f-preco">Preço na etiqueta</label><input id="f-preco" value="${esc(v.preco)}" autocomplete="off"></div></div>
+      <div class="campo"><label for="f-obs">Observações</label><textarea id="f-obs" placeholder="Cor, acabamento, avaria, onde está no showroom...">${esc(v.obs)}</textarea></div>
+      <div id="lido-box">${v.lido ? `<details class="lido"><summary>Texto lido da etiqueta</summary><pre>${esc(v.lido)}</pre></details>` : ""}</div>
+    </div>`;
+  }
+  function ligar(v) {
+    const q = $("f-qtd");
+    $("q-menos").onclick = () => q.value = Math.max(0, (Number(q.value) || 0) - 1);
+    $("q-mais").onclick = () => q.value = (Number(q.value) || 0) + 1;
+    corpo.querySelectorAll("[data-q]").forEach(b => b.onclick = () => q.value = b.dataset.q);
+    $("f-grupo").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; v.grupo = b.dataset.g;
+      $("f-grupo").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+      $("lista-tipos").innerHTML = (TIPOS[v.grupo] || []).map(t => `<option value="${t}">`).join(""); };
+  }
+  const ler = () => ({ nome: $("f-nome").value.trim(), tipo: $("f-tipo").value.trim(), quantidade: Math.max(0, parseInt($("f-qtd").value, 10) || 0),
+    codigo: $("f-codigo").value.trim(), marca: $("f-marca").value.trim(), medidas: $("f-medidas").value.trim(), preco: $("f-preco").value.trim(), obs: $("f-obs").value.trim() });
+
+  function prevHTML(blob, id, rotulo) {
+    return blob ? `<img src="${URL.createObjectURL(blob)}" alt="${rotulo}">`
+      : `<div style="display:grid;gap:6px"><button type="button" class="btn" id="${id}-tirar">Tirar foto</button><button type="button" class="btn" id="${id}-enviar">Enviar</button></div>`;
+  }
+  function formulario(lendo) {
+    corpo.innerHTML = `
+      <div class="fotos">
+        <figure><div class="prev" id="prev-e">${novo.blobEtiqueta ? prevHTML(novo.blobEtiqueta) : "Sem etiqueta"}</div><figcaption class="caps muted">Etiqueta</figcaption></figure>
+        <figure><div class="prev" id="prev-p">${prevHTML(novo.blobProduto, "pp", "Peça")}</div><figcaption class="caps muted">Peça</figcaption></figure>
+      </div>
+      <div class="status" id="f-status" ${lendo ? "" : "hidden"}>${lendo ? `<span class="girando"></span> Lendo a etiqueta…` : ""}</div>
+      ${camposHTML(novo, true)}
+      <div id="dup" hidden></div>
+      <button type="button" class="btn cheio largo grande" id="f-ok">OK, salvar no estoque</button>
+      <button type="button" class="btn largo" id="f-ok-outra">Salvar e catalogar outra</button>`;
+    ligar(novo);
+    const fotoProduto = async (origem) => { const f = await pedirFoto(origem); if (!f) return;
+      try { novo.blobProduto = await reduzir(f); $("prev-p").innerHTML = prevHTML(novo.blobProduto, "pp", "Peça"); } catch (e) {} };
+    if ($("pp-tirar")) { $("pp-tirar").onclick = () => fotoProduto("camera"); $("pp-enviar").onclick = () => fotoProduto("galeria"); }
+    $("f-ok").onclick = () => salvar(false);
+    $("f-ok-outra").onclick = () => salvar(true);
+    $("f-codigo").addEventListener("change", duplicado);
+  }
+
+  async function lerEtiqueta() {
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      const r = await fetch("/api/ler-etiqueta", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + (session && session.access_token) },
+        body: JSON.stringify({ imagem: await blobParaBase64(novo.blobEtiqueta), tipo: "image/jpeg" }) });
+      const j = await r.json().catch(() => ({}));
+      if (!$("f-nome")) return;
+      if (!r.ok) { status(r.status === 503 ? "A leitura automática ainda não foi ativada. Preencha os campos à mão." : "Não consegui ler a etiqueta. Confira a foto ou preencha à mão.", "erro"); return; }
+      const set = (id, val) => { const el = $(id); if (el && !el.value && val) el.value = String(val); };
+      set("f-nome", j.nome); set("f-codigo", j.codigo); set("f-marca", j.marca); set("f-medidas", j.medidas); set("f-preco", j.preco); set("f-tipo", j.tipo); set("f-obs", j.detalhes);
+      if (GRUPOS.includes(j.grupo)) { novo.grupo = j.grupo; $("f-grupo").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x.dataset.g === j.grupo)); }
+      novo.lido = String(j.texto || "");
+      if (novo.lido) $("lido-box").innerHTML = `<details class="lido"><summary>Texto lido da etiqueta</summary><pre>${esc(novo.lido)}</pre></details>`;
+      status(novo.blobProduto ? "Etiqueta lida. Confira os campos e a quantidade." : "Etiqueta lida. Confira os campos, a quantidade e tire também a foto da peça.", "ok");
+      duplicado();
+    } catch (e) { status("Não consegui ler a etiqueta. Verifique a internet ou preencha à mão.", "erro"); }
+  }
+
+  function duplicado() {
+    const box = $("dup"), cod = ($("f-codigo") || {}).value?.trim().toLowerCase(); if (!box) return;
+    const igual = cod && itens.find(i => (i.codigo || "").trim().toLowerCase() === cod);
+    if (!igual) { box.hidden = true; return; }
+    box.hidden = false;
+    box.innerHTML = `<div class="status">Já existe "${esc(igual.nome || "peça")}" com este código (${Number(igual.quantidade) || 0} un.).
+      <div class="duas" style="margin-top:10px"><button type="button" class="btn" id="dup-somar">Somar à existente</button><button type="button" class="btn" id="dup-nao">Salvar separado</button></div></div>`;
+    $("dup-somar").onclick = async () => { const n = (Number(igual.quantidade) || 0) + (parseInt($("f-qtd").value, 10) || 0);
+      const { error } = await sb.from("estoque").update({ quantidade: n, atualizado_em: new Date().toISOString() }).eq("id", igual.id);
+      if (error) return status("Não foi possível atualizar. Tente de novo.", "erro");
+      fecharPainel(); aviso(`Somado: ${esc(igual.nome)} agora tem ${n} un.`); carregar(); };
+    $("dup-nao").onclick = () => box.hidden = true;
+  }
+
+  async function salvar(outra) {
+    const v = ler();
+    if (!v.nome && !v.codigo && !novo.blobEtiqueta && !novo.blobProduto) return status("Preencha ao menos o nome ou tire uma foto.", "erro");
+    const b1 = $("f-ok"), b2 = $("f-ok-outra"); b1.disabled = b2.disabled = true; b1.innerHTML = `<span class="girando"></span> Salvando`;
+    let fe = "", fp = "";
+    try { fe = await subir(novo.blobEtiqueta, "etiqueta"); fp = await subir(novo.blobProduto, "peca"); }
+    catch (e) { status("As fotos não foram enviadas. Os dados serão salvos sem elas.", "erro"); }
+    const { error } = await sb.from("estoque").insert({ ...v, grupo: novo.grupo, texto_etiqueta: novo.lido || "", foto_etiqueta: fe, foto_produto: fp });
+    if (error) { b1.disabled = b2.disabled = false; b1.textContent = "OK, salvar no estoque"; return status("Não foi possível salvar. Verifique a internet e tente de novo.", "erro"); }
+    aviso(`Salvo: ${esc(v.nome || v.codigo || "peça")}.`); carregar();
+    if (outra) iniciar(); else fecharPainel();
+  }
+
+  function abrirDetalhe(id) {
+    const it = itens.find(i => i.id === id); if (!it) return;
+    const ed = { ...it, lido: it.texto_etiqueta };
+    abrirPainel(it.nome || "Peça");
+    const img = (p, rot) => urls[p] ? `<img src="${esc(urls[p])}" alt="${rot}">` : `Sem ${rot.toLowerCase()}`;
+    corpo.innerHTML = `
+      <div class="fotos">
+        <figure><div class="prev" id="d-p">${img(it.foto_produto, "Foto")}</div><figcaption class="caps muted">Peça</figcaption></figure>
+        <figure><div class="prev">${img(it.foto_etiqueta, "Etiqueta")}</div><figcaption class="caps muted">Etiqueta</figcaption></figure>
+      </div>
+      ${!it.foto_produto ? `<div class="duas"><button type="button" class="btn" id="d-tirar">Tirar foto da peça</button><button type="button" class="btn" id="d-enviar">Enviar foto</button></div>` : ""}
+      <div class="status" id="f-status" hidden></div>
+      ${camposHTML(ed, false)}
+      <p class="muted" style="margin:0;font-size:12px">Catalogada em ${new Date(it.criado_em).toLocaleString("pt-BR")}.</p>
+      <button type="button" class="btn cheio largo grande" id="d-salvar">Salvar alterações</button>
+      <div id="d-excluir-box"><button type="button" class="btn perigo largo" id="d-excluir">Excluir do estoque</button></div>`;
+    ligar(ed);
+    const novaFoto = async (origem) => { const f = await pedirFoto(origem); if (!f) return;
+      try { status(`<span class="girando"></span> Enviando foto…`); const caminho = await subir(await reduzir(f), "peca");
+        const { error } = await sb.from("estoque").update({ foto_produto: caminho, atualizado_em: new Date().toISOString() }).eq("id", it.id); if (error) throw error;
+        status("Foto salva.", "ok"); await carregar(); abrirDetalhe(id);
+      } catch (e) { status("Não foi possível enviar a foto.", "erro"); } };
+    if ($("d-tirar")) { $("d-tirar").onclick = () => novaFoto("camera"); $("d-enviar").onclick = () => novaFoto("galeria"); }
+    $("d-salvar").onclick = async () => { const v = ler(), s = $("d-salvar"); s.disabled = true; s.innerHTML = `<span class="girando"></span> Salvando`;
+      const { error } = await sb.from("estoque").update({ ...v, grupo: ed.grupo, atualizado_em: new Date().toISOString() }).eq("id", it.id);
+      if (error) { s.disabled = false; s.textContent = "Salvar alterações"; return status("Não foi possível salvar.", "erro"); }
+      fecharPainel(); aviso(`Atualizado: ${esc(v.nome || "peça")}.`); carregar(); };
+    $("d-excluir").onclick = () => {
+      $("d-excluir-box").innerHTML = `<div class="confirmar"><span>Excluir "${esc(it.nome || "esta peça")}"? Isso não pode ser desfeito.</span>
+        <div class="duas"><button type="button" class="btn" id="d-nao">Cancelar</button><button type="button" class="btn perigo" id="d-sim">Excluir</button></div></div>`;
+      $("d-nao").onclick = () => abrirDetalhe(id);
+      $("d-sim").onclick = async () => { const { error } = await sb.from("estoque").delete().eq("id", it.id);
+        if (error) return status("Não foi possível excluir.", "erro");
+        const fotos = [it.foto_produto, it.foto_etiqueta].filter(Boolean); if (fotos.length) sb.storage.from("fotos").remove(fotos);
+        fecharPainel(); aviso(`Excluído: ${esc(it.nome || "peça")}.`); carregar(); };
+    };
+  }
+
+  $("btn-exportar").addEventListener("click", () => {
+    const cols = ["nome", "codigo", "grupo", "tipo", "quantidade", "marca", "medidas", "preco", "obs", "criado_em"];
+    const cab = ["Nome", "Código", "Grupo", "Tipo", "Quantidade", "Marca", "Medidas", "Preço etiqueta", "Observações", "Catalogado em"];
+    const cel = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const csv = "﻿" + [cab.map(cel).join(";"), ...itens.map(i => cols.map(c => cel(i[c])).join(";"))].join("\r\n");
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+    a.download = `estoque-viva-home-${new Date().toISOString().slice(0, 10)}.csv`; document.body.appendChild(a); a.click(); a.remove();
+  });
+
+  // ---------- Início ----------
+  (async () => {
+    if (!sb) { mostrarLogin(); return; }
+    const { data: { session } } = await sb.auth.getSession();
+    session ? mostrarApp() : mostrarLogin();
+    sb.auth.onAuthStateChange((ev) => { if (ev === "SIGNED_OUT") mostrarLogin(); });
+  })();
+})();
+</script>
+</body>
+</html>
